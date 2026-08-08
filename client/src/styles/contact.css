@@ -1,0 +1,133 @@
+/* =========================================================
+   Blocks: .contact · .form
+   ========================================================= */
+
+.contact__inner {
+  display: grid;
+  gap: var(--space-2xl);
+}
+
+.contact__list {
+  display: grid;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+}
+
+.contact__item {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border-soft);
+}
+
+.contact__label {
+  font-size: var(--fs-xs);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--color-leather);
+}
+
+.contact__value { font-size: var(--fs-sm); }
+a.contact__value { color: var(--color-primary-deep); }
+a.contact__value:hover { color: var(--color-primary-darker); }
+
+/* Form */
+.form {
+  padding: var(--space-xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.form__row { margin-bottom: var(--space-md); }
+
+.form__label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--color-leather);
+}
+
+.form__input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: var(--fs-sm);
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.form__input::placeholder { color: var(--color-text-dim); }
+
+.form__input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+
+.form__input--textarea { resize: vertical; min-height: 120px; }
+
+.form__input--select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--color-text-muted) 50%),
+                    linear-gradient(135deg, var(--color-text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 20px) 52%, calc(100% - 15px) 52%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.form__input.is-invalid { border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
+
+.form__error {
+  margin: 6px 0 0;
+  font-size: var(--fs-xs);
+  color: var(--color-accent-deep);
+}
+.form__error[hidden] { display: none; }
+
+.form__note {
+  margin: var(--space-sm) 0 0;
+  font-size: var(--fs-xs);
+  color: var(--color-text-dim);
+  text-align: center;
+}
+
+.form__success {
+  margin: var(--space-md) 0 0;
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--fs-sm);
+  color: var(--color-green-deep);
+  background: var(--color-green-soft);
+  border: 1px solid var(--color-green);
+  border-radius: var(--radius-sm);
+}
+.form__success[hidden] { display: none; }
+
+/* Submission failure — the request never reached the server, or it answered an
+   error the individual fields cannot explain. Uses Malbec to read as a problem
+   rather than as a per-field warning (which is gold). */
+.form__failure {
+  margin: var(--space-md) 0 0;
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--fs-sm);
+  color: var(--color-wine);
+  background: var(--color-wine-soft);
+  border: 1px solid var(--color-wine);
+  border-radius: var(--radius-sm);
+}
+.form__failure[hidden] { display: none; }
+
+/* --- ≥ 900px --- */
+@media (min-width: 900px) {
+  .contact__inner {
+    grid-template-columns: 1fr 1.05fr;
+    align-items: start;
+    gap: var(--space-3xl);
+  }
+
+  .contact__item { flex-direction: row; justify-content: space-between; align-items: baseline; }
+}

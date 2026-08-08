@@ -1,0 +1,52 @@
+/* =========================================================
+   Block: .steps · .step — the "Proceso" timeline
+   ========================================================= */
+
+.steps {
+  display: grid;
+  gap: var(--space-lg);
+  counter-reset: step;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.step__num {
+  font-family: var(--font-heading);
+  font-size: var(--fs-xl);
+  font-weight: 800;
+  color: var(--color-primary-deep);
+  opacity: .85;
+}
+
+.step__title { font-size: var(--fs-lg); font-weight: 600; }
+
+.step__text {
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.step__meta {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--color-accent-deep);
+}
+
+/* --- ≥ 600px --- */
+@media (min-width: 600px) {
+  .steps { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* --- ≥ 1120px: four across, number stacked above the body --- */
+@media (min-width: 1120px) {
+  .steps { grid-template-columns: repeat(4, 1fr); }
+  .step { grid-template-columns: 1fr; gap: var(--space-sm); }
+}

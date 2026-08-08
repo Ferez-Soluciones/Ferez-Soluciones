@@ -1,0 +1,74 @@
+[
+  {
+    "id": "panaderia-molino",
+    "order": 1,
+    "category": "gastronomia",
+    "categoryLabel": "Gastronomía",
+    "initials": "PM",
+    "name": "Panadería Molino",
+    "description": "Menú digital, pedidos por WhatsApp y sección de encargos para eventos.",
+    "metricValue": "+41%",
+    "metricLabel": "pedidos online en 3 meses",
+    "thumbVariant": "a"
+  },
+  {
+    "id": "consultorio-avila",
+    "order": 2,
+    "category": "salud",
+    "categoryLabel": "Salud",
+    "initials": "CD",
+    "name": "Consultorio Dental Ávila",
+    "description": "Turnos online, listado de obras sociales y galería de tratamientos.",
+    "metricValue": "+63%",
+    "metricLabel": "turnos solicitados desde la web",
+    "thumbVariant": "b"
+  },
+  {
+    "id": "estudio-reyes",
+    "order": 3,
+    "category": "servicios",
+    "categoryLabel": "Servicios",
+    "initials": "EJ",
+    "name": "Estudio Jurídico Reyes",
+    "description": "Landing por área de práctica con formulario de consulta calificada.",
+    "metricValue": "2.4x",
+    "metricLabel": "consultas mensuales",
+    "thumbVariant": "c"
+  },
+  {
+    "id": "bike-center",
+    "order": 4,
+    "category": "retail",
+    "categoryLabel": "Retail",
+    "initials": "BC",
+    "name": "Bike Center",
+    "description": "Catálogo de bicicletas con filtros y cotizador de service.",
+    "metricValue": "+28%",
+    "metricLabel": "visitas al local",
+    "thumbVariant": "d"
+  },
+  {
+    "id": "climatec",
+    "order": 5,
+    "category": "servicios",
+    "categoryLabel": "Servicios",
+    "initials": "CT",
+    "name": "ClimaTec Refrigeración",
+    "description": "Página de servicio técnico con cobertura por zona y turno urgente.",
+    "metricValue": "+55%",
+    "metricLabel": "llamados en temporada alta",
+    "thumbVariant": "e"
+  },
+  {
+    "id": "vinedo-norte",
+    "order": 6,
+    "category": "gastronomia",
+    "categoryLabel": "Gastronomía",
+    "initials": "VN",
+    "name": "Viñedo Norte",
+    "description": "Reservas de visitas guiadas y venta directa de cajas de vino.",
+    "metricValue": "+34%",
+    "metricLabel": "reservas anticipadas",
+    "thumbVariant": "f"
+  }
+]

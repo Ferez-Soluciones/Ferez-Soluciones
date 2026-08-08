@@ -1,0 +1,30 @@
+[
+  {
+    "id": "projects-delivered",
+    "order": 1,
+    "value": 72,
+    "suffix": "",
+    "label": "Proyectos entregados"
+  },
+  {
+    "id": "average-delivery",
+    "order": 2,
+    "value": 10,
+    "suffix": "",
+    "label": "Días promedio de entrega"
+  },
+  {
+    "id": "recommend-rate",
+    "order": 3,
+    "value": 96,
+    "suffix": "%",
+    "label": "Clientes que recomiendan"
+  },
+  {
+    "id": "years-active",
+    "order": 4,
+    "value": 5,
+    "suffix": " años",
+    "label": "Trabajando con PyMEs"
+  }
+]

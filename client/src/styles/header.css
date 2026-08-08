@@ -1,0 +1,141 @@
+/* =========================================================
+   Blocks: .header · .logo · .nav · .nav-toggle
+   ========================================================= */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, .78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--transition), background-color var(--transition);
+}
+
+.header.is-scrolled {
+  border-bottom-color: var(--color-border);
+  background: rgba(255, 255, 255, .95);
+  box-shadow: var(--shadow-sm);
+}
+
+.header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--header-h);
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  color: var(--color-primary-deep);
+}
+
+.logo__text {
+  font-family: var(--font-heading);
+  font-size: var(--fs-md);
+  font-weight: 800;
+  letter-spacing: -.03em;
+  color: var(--color-text);
+}
+
+.logo__accent { color: var(--color-primary-deep); }
+
+/* Navigation. Below 900px it is a fixed drawer collapsed with max-height, which
+   animates (unlike display) and keeps the links in the tab order predictably. */
+.nav {
+  position: fixed;
+  inset: var(--header-h) 0 auto 0;
+  max-height: 0;
+  overflow: hidden;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  transition: max-height 320ms ease;
+}
+
+.nav.is-open { max-height: 460px; box-shadow: var(--shadow-md); }
+
+.nav__list {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-md) var(--space-lg) var(--space-xl);
+  gap: 2px;
+}
+
+.nav__link {
+  display: block;
+  padding: var(--space-sm) 0;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border-soft);
+}
+
+.nav__link:hover,
+.nav__link.is-active { color: var(--color-primary-deep); }
+
+.nav__item--cta { margin-top: var(--space-md); }
+.nav__item--cta .btn { width: 100%; }
+
+/* Hamburger toggle */
+.nav-toggle {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 42px;
+  height: 42px;
+  padding: 0 9px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.nav-toggle__bar {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: var(--color-primary-deep);
+  border-radius: 2px;
+  transition: transform var(--transition), opacity var(--transition);
+}
+
+/* The bars morph into an X driven by aria-expanded, so the accessible state and
+   the visual state can never drift apart. */
+.nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* --- ≥ 900px: horizontal nav, no hamburger --- */
+@media (min-width: 900px) {
+  .nav-toggle { display: none; }
+
+  .nav {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .nav__list {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-lg);
+    padding: 0;
+  }
+
+  .nav__link {
+    padding: 0;
+    border-bottom: 2px solid transparent;
+    font-size: var(--fs-sm);
+  }
+
+  .nav__link.is-active { border-bottom-color: var(--color-primary); }
+
+  .nav__item--cta { margin-top: 0; }
+  .nav__item--cta .btn { width: auto; }
+}

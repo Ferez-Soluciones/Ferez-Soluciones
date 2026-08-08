@@ -1,0 +1,123 @@
+/* =========================================================
+   Design tokens — CSS Custom Properties
+   Ported verbatim from the legacy styles/main.css so the
+   rebuilt site renders pixel for pixel like the original.
+
+   The palette is named after Argentine references and the names are kept as-is:
+
+   Primary:
+     Celeste Argentino  #74ACDF · Blanco Nube      #FFFFFF · Amarillo Sol de Mayo #F6B40E
+   Complementary:
+     Rojo Malbec        #722F37 · Verde Yerba Mate #6B8E23
+     Marrón Cuero       #8B5A2B · Gris Plata       #E0E0E0
+   ========================================================= */
+
+:root {
+  /* Surfaces */
+  --color-bg:            #FFFFFF;   /* Blanco Nube */
+  --color-bg-alt:        #F5FAFD;
+  --color-surface:       #FFFFFF;
+  --color-surface-2:     var(--color-silver-light);
+  --color-border:        var(--color-silver);
+  --color-border-soft:   #EDEDED;
+
+  /* Text — warm browns derived from the leather tone, tuned for AA contrast */
+  --color-text:          var(--color-leather-dark);
+  --color-text-muted:    #6B5A4A;
+  --color-text-dim:      #7D6B5C;
+
+  /* Celeste Argentino — CTAs, links, icons, headings */
+  --color-primary:       #74ACDF;
+  --color-primary-dark:  #5A97CE;
+  --color-primary-deep:  #2B6CA3;   /* readable on white */
+  --color-primary-darker:#1F5D91;
+  --color-primary-light: #A8CCEA;
+  --color-primary-tint:  #EAF3FB;
+  --color-primary-soft:  #74ACDF29;
+
+  /* Amarillo Sol de Mayo — warnings, badges, highlights */
+  --color-accent:        #F6B40E;
+  --color-accent-deep:   #8A6100;   /* readable on white */
+  --color-accent-light:  #FBD97A;
+  --color-accent-soft:   #F6B40E24;
+
+  /* Rojo Malbec — dark backgrounds and the secondary CTA */
+  --color-wine:          #722F37;
+  --color-wine-dark:     #5A242B;
+  --color-wine-soft:     #722F3714;
+
+  /* Verde Yerba Mate — success, growth, active state */
+  --color-green:         #6B8E23;
+  --color-green-deep:    #4A6410;   /* readable on white */
+  --color-green-soft:    #6B8E2320;
+
+  /* Marrón Cuero — warm text, labels and borders */
+  --color-leather:       #8B5A2B;
+  --color-leather-dark:  #3E2A18;   /* body text */
+
+  /* Gris Plata — neutral surfaces and dividers (Río de la Plata) */
+  --color-silver:        #E0E0E0;
+  --color-silver-light:  #F2F2F2;
+
+  --gradient-brand: linear-gradient(120deg, #1F5D91 0%, #4E93CE 100%);
+  --gradient-sun:   linear-gradient(120deg, #74ACDF 0%, #F6B40E 100%);
+
+  /* Typography */
+  --font-heading: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  --font-body:    'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  --fs-xs:   0.8125rem;
+  --fs-sm:   0.9375rem;
+  --fs-base: 1rem;
+  --fs-md:   1.0625rem;
+  --fs-lg:   1.25rem;
+  --fs-xl:   1.5rem;
+  --fs-2xl:  1.875rem;
+  --fs-3xl:  2.25rem;
+  --fs-4xl:  2.75rem;
+
+  /* Spacing */
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4.5rem;
+  --space-4xl: 6rem;
+
+  /* Layout */
+  --container-max: 1180px;
+  --container-narrow: 780px;
+  --header-h: 68px;
+
+  /* Radii and shadows */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 2px 8px rgba(31, 93, 145, .08);
+  --shadow-md: 0 12px 30px rgba(31, 93, 145, .13);
+  --shadow-glow: 0 8px 24px rgba(116, 172, 223, .45);
+
+  --transition: 220ms cubic-bezier(.4, 0, .2, 1);
+}
+
+/* Fluid typography, Mobile-First: the scale is re-declared at each breakpoint
+   instead of every heading having its own media query. Must stay right after the
+   base token block so these overrides win at their breakpoint. */
+
+/* --- ≥ 600px --- */
+@media (min-width: 600px) {
+  :root { --fs-3xl: 2.75rem; --fs-2xl: 2.125rem; }
+}
+
+/* --- ≥ 900px --- */
+@media (min-width: 900px) {
+  :root {
+    --fs-4xl: 3.5rem;
+    --fs-3xl: 3.25rem;
+    --fs-2xl: 2.375rem;
+  }
+}

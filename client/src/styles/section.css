@@ -1,0 +1,32 @@
+/* =========================================================
+   Block: .section — generic wrapper shared by every content section
+   ========================================================= */
+
+.section { padding-block: var(--space-3xl); }
+.section--alt { background: var(--color-bg-alt); border-block: 1px solid var(--color-border-soft); }
+
+/* On the alternate background the cards switch to Gris Plata so they still read
+   as raised. Higher specificity than .step / .quote, so file order cannot break it. */
+.section--alt .step,
+.section--alt .quote { background: var(--color-silver-light); }
+
+.section__head {
+  max-width: 62ch;
+  margin-bottom: var(--space-2xl);
+}
+
+.section__title {
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+}
+
+.section__lead {
+  font-size: var(--fs-md);
+  color: var(--color-text-muted);
+  margin-bottom: 0;
+}
+
+/* --- ≥ 900px --- */
+@media (min-width: 900px) {
+  .section { padding-block: var(--space-4xl); }
+}

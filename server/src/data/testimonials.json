@@ -1,0 +1,29 @@
+[
+  {
+    "id": "marina-gimenez",
+    "order": 1,
+    "initials": "MG",
+    "author": "Marina Giménez",
+    "role": "Dueña",
+    "company": "Panadería Molino",
+    "quote": "Teníamos solo Instagram y perdíamos consultas todo el tiempo. Ahora la gente entra, ve los precios y nos escribe por WhatsApp sin que tengamos que explicar nada."
+  },
+  {
+    "id": "diego-reyes",
+    "order": 2,
+    "initials": "DR",
+    "author": "Diego Reyes",
+    "role": "Socio",
+    "company": "Estudio Jurídico Reyes",
+    "quote": "Lo que más valoré fue el proceso. Siempre supe en qué etapa estábamos y me entregaron en la fecha prometida, algo que nunca me había pasado."
+  },
+  {
+    "id": "laura-avila",
+    "order": 3,
+    "initials": "LA",
+    "author": "Laura Ávila",
+    "role": "Odontóloga",
+    "company": "Consultorio Ávila",
+    "quote": "Pasamos de agendar turnos por teléfono a tener la agenda cargada desde la web. Me liberó horas de trabajo por semana."
+  }
+]

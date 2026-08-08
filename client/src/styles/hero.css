@@ -1,0 +1,176 @@
+/* =========================================================
+   Blocks: .hero · .browser · .skeleton · .floating-stat
+   ========================================================= */
+
+.hero {
+  position: relative;
+  padding-block: var(--space-3xl) var(--space-2xl);
+  overflow: hidden;
+}
+
+.hero__glow {
+  position: absolute;
+  top: -260px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 620px;
+  background: radial-gradient(circle at 50% 50%, rgba(116, 172, 223, .38), transparent 64%);
+  pointer-events: none;
+}
+
+.hero__inner {
+  position: relative;
+  display: grid;
+  gap: var(--space-2xl);
+}
+
+.hero__title {
+  font-size: var(--fs-3xl);
+  font-weight: 800;
+  margin-bottom: var(--space-md);
+}
+
+.hero__lead {
+  font-size: var(--fs-md);
+  color: var(--color-text-muted);
+  max-width: 56ch;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+
+.hero__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-md);
+  margin-top: var(--space-xl);
+}
+
+.hero__badge {
+  position: relative;
+  padding-left: 1.15rem;
+  font-size: var(--fs-xs);
+  color: var(--color-text-dim);
+}
+
+.hero__badge::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-green);
+}
+
+/* Hero visual — a browser mockup built entirely from CSS, no image assets */
+.hero__visual { position: relative; }
+
+.browser {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.browser__bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-surface-2);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.browser__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #CFCFCF;
+}
+
+.browser__url {
+  margin-left: var(--space-sm);
+  font-size: var(--fs-xs);
+  color: var(--color-text-dim);
+}
+
+.browser__screen { padding: var(--space-lg); }
+
+.browser__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+
+/* Shared with the loading placeholders of the API-driven sections. */
+.skeleton {
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--color-silver-light) 25%, #DCDCDC 50%, var(--color-silver-light) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2.2s infinite linear;
+}
+
+.skeleton--title { height: 22px; width: 72%; margin-bottom: var(--space-md); }
+.skeleton--line  { height: 10px; width: 100%; margin-bottom: 10px; }
+.skeleton--short { width: 62%; }
+.skeleton--btn   { height: 34px; width: 140px; margin-top: var(--space-md); background: var(--color-primary); animation: none; opacity: .9; }
+.skeleton--card  { height: 76px; }
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.floating-stat {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.floating-stat--a { bottom: -18px; left: -8px; }
+.floating-stat--b { top: -18px; right: -8px; }
+
+.floating-stat__value {
+  font-family: var(--font-heading);
+  font-size: var(--fs-lg);
+  color: var(--color-primary-deep);
+  line-height: 1.1;
+}
+
+.floating-stat__label {
+  font-size: var(--fs-xs);
+  color: var(--color-text-dim);
+}
+
+/* --- ≥ 900px: two columns --- */
+@media (min-width: 900px) {
+  .hero { padding-block: var(--space-4xl) var(--space-3xl); }
+
+  .hero__inner {
+    grid-template-columns: 1.05fr .95fr;
+    align-items: center;
+    gap: var(--space-3xl);
+  }
+
+  .hero__title { font-size: var(--fs-4xl); }
+}
+
+/* --- ≥ 1120px: push the floating stats outside the mockup --- */
+@media (min-width: 1120px) {
+  .floating-stat--a { left: -40px; }
+  .floating-stat--b { right: -40px; }
+}

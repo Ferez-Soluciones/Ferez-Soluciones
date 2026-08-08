@@ -1,0 +1,67 @@
+/* =========================================================
+   Block: .footer — dark band in Rojo Malbec
+   ========================================================= */
+
+.footer {
+  padding-top: var(--space-2xl);
+  background: var(--color-wine);
+  color: var(--color-silver);
+}
+
+/* The logo repeats here and has to be recoloured for the dark background */
+.footer .logo { color: var(--color-accent); }
+.footer .logo__text { color: #FFFFFF; }
+.footer .logo__accent { color: var(--color-primary-light); }
+
+/* The blue focus ring is invisible against the wine background — switch to gold */
+.footer :focus-visible { outline-color: var(--color-accent); }
+
+.footer__inner {
+  display: grid;
+  gap: var(--space-xl);
+  padding-bottom: var(--space-xl);
+}
+
+.footer__text {
+  margin-top: var(--space-sm);
+  font-size: var(--fs-sm);
+  color: var(--color-silver);
+  max-width: 42ch;
+}
+
+.footer__heading {
+  margin-bottom: var(--space-sm);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.footer__list { display: grid; gap: var(--space-xs); }
+
+.footer__link {
+  font-size: var(--fs-sm);
+  color: var(--color-silver);
+}
+.footer__link:hover { color: var(--color-accent); }
+
+.footer__bottom {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding-block: var(--space-lg);
+  border-top: 1px solid rgba(224, 224, 224, .22);
+}
+
+.footer__copy {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--color-silver);
+}
+
+/* --- ≥ 600px --- */
+@media (min-width: 600px) {
+  .footer__inner { grid-template-columns: 1.6fr 1fr 1fr; }
+  .footer__bottom { flex-direction: row; justify-content: space-between; }
+}

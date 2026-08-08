@@ -1,0 +1,22 @@
+/* =========================================================
+   Block: .whatsapp-fab — floating action button
+   ========================================================= */
+
+.whatsapp-fab {
+  position: fixed;
+  right: var(--space-md);
+  bottom: var(--space-md);
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  color: var(--color-text);
+  background: var(--color-accent);
+  border-radius: 50%;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition);
+}
+
+.whatsapp-fab:hover { transform: scale(1.08); }

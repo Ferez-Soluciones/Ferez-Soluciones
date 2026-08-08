@@ -1,0 +1,44 @@
+[
+  {
+    "id": "landing-pages",
+    "order": 1,
+    "icon": "browser",
+    "title": "Landing pages de conversión",
+    "description": "Una página, un objetivo. Estructura probada, copy orientado a beneficios y llamadas a la acción en los puntos exactos donde el visitante decide."
+  },
+  {
+    "id": "mobile-first",
+    "order": 2,
+    "icon": "mobile",
+    "title": "Diseño mobile-first",
+    "description": "7 de cada 10 visitas llegan desde el celular. Diseñamos primero para esa pantalla y después escalamos, no al revés."
+  },
+  {
+    "id": "seo",
+    "order": 3,
+    "icon": "search",
+    "title": "SEO técnico on-page",
+    "description": "Metaetiquetas, datos estructurados, jerarquía semántica y velocidad. La base para que Google entienda y muestre tu negocio."
+  },
+  {
+    "id": "performance",
+    "order": 4,
+    "icon": "bolt",
+    "title": "Rendimiento y Core Web Vitals",
+    "description": "Código propio sin frameworks pesados. Sitios que cargan en menos de dos segundos incluso con conexión móvil lenta."
+  },
+  {
+    "id": "integrations",
+    "order": 5,
+    "icon": "chat",
+    "title": "Integración con WhatsApp y formularios",
+    "description": "Los mensajes llegan a donde ya trabajás: WhatsApp, mail o tu CRM. Sin plataformas nuevas que aprender."
+  },
+  {
+    "id": "analytics",
+    "order": 6,
+    "icon": "chart",
+    "title": "Analítica y soporte",
+    "description": "Dejamos medición configurada y 30 días de ajustes incluidos. Vas a saber qué funciona, no suponerlo."
+  }
+]
