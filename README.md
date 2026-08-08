@@ -171,14 +171,70 @@ All optional — see `.env.example`.
 | `PORT` | `4000` | API port |
 | `NODE_ENV` | `development` | Hides error details in production |
 | `CLIENT_ORIGIN` | `http://localhost:5173` | CORS origin for the Vite dev server |
-| `EMAIL_TRANSPORT` | `console` | `console` logs the email instead of sending it |
-| `CONTACT_TO` / `CONTACT_FROM` | `contacto.mfsoluciones@gmail.com` | Notification addresses |
+| `EMAIL_TRANSPORT` | `console` | `console` logs the email; `resend` sends it |
+| `CONTACT_TO` | `contacto.mfsoluciones@gmail.com` | Inbox that receives the leads |
+| `CONTACT_FROM` | `onboarding@resend.dev` | Sender — must be a domain verified in Resend |
+| `RESEND_API_KEY` | — | Required when `EMAIL_TRANSPORT=resend` |
 | `CONTACT_RATE_LIMIT_MAX` | `5` | Submissions per IP per window |
 | `CONTACT_RATE_LIMIT_WINDOW_MS` | `3600000` | Window length (1 hour) |
+| `SERVERLESS` | — | Set to `1` to reproduce the serverless path locally |
 
-To send real email, add a transport to `resolveTransport()` in
+To use another email provider, add a transport to `resolveTransport()` in
 `server/src/services/email.service.ts`. It only has to expose `name` and `send`;
 nothing else in the codebase changes.
+
+---
+
+## Deploying to Vercel
+
+`vercel.json` builds the client and exposes the Express app as a single function:
+
+```jsonc
+{
+  "buildCommand": "npm run build --workspace client",  // → client/dist
+  "outputDirectory": "client/dist",                    // the static site
+  "rewrites": [{ "source": "/api/(.*)", "destination": "/api" }]
+}
+```
+
+`api/index.ts` is the serverless entry point. It reuses `createApp()` untouched —
+which is why app assembly and process startup were split into two modules in the
+first place: `server/src/index.ts` binds a port, `api/index.ts` hands the same app
+to Vercel.
+
+Set these in **Project Settings → Environment Variables**:
+
+| Variable | Value |
+|---|---|
+| `EMAIL_TRANSPORT` | `resend` |
+| `RESEND_API_KEY` | your key from <https://resend.com/api-keys> |
+| `CONTACT_TO` | `contacto.mfsoluciones@gmail.com` |
+| `CONTACT_FROM` | `onboarding@resend.dev`, or an address on a domain you verified |
+
+### What changes on serverless, and why
+
+Vercel's filesystem is read-only and `/tmp` disappears with the instance, so
+`leads.json` cannot work there. The layered design absorbs this in two places
+and nowhere else:
+
+- **Content** is imported rather than read with `fs`, so the bundler inlines it.
+  Read-only data works identically on every host.
+- **Leads** get a second adapter. `repositories/index.ts` picks
+  `ephemeral/lead.repository.ts` when `VERCEL=1`, and it reports
+  `isDurable: false`.
+
+That flag is not cosmetic. `contact.service.ts` reads it to decide how to treat a
+failed notification: with a real disk the lead is already safe and the error is
+just logged, but on serverless **the email is the only copy of the lead**, so a
+delivery failure returns 502 and tells the visitor to write directly. Answering
+"¡Gracias!" while the message evaporates would be the worst outcome for a page
+whose entire job is collecting these.
+
+To exercise that path locally:
+
+```bash
+SERVERLESS=1 EMAIL_TRANSPORT=resend npm run dev:server   # no key → 502, as intended
+```
 
 ---
 

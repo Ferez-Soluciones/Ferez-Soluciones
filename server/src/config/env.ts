@@ -33,9 +33,19 @@ function readNumber(key: string, fallback: number): number {
 
 const nodeEnv = readString('NODE_ENV', 'development');
 
+/**
+ * True when running on a serverless platform with no writable filesystem.
+ *
+ * Vercel sets `VERCEL=1` on every deployment. `SERVERLESS=1` is accepted too so
+ * the same behaviour can be forced anywhere else — or reproduced locally when
+ * testing that code path.
+ */
+const isServerless = process.env['VERCEL'] === '1' || process.env['SERVERLESS'] === '1';
+
 export const env = Object.freeze({
   nodeEnv,
   isProduction: nodeEnv === 'production',
+  isServerless,
 
   /** Port the HTTP server listens on. */
   port: readNumber('PORT', 4000),
@@ -44,11 +54,19 @@ export const env = Object.freeze({
   clientOrigin: readString('CLIENT_ORIGIN', 'http://localhost:5173'),
 
   email: {
-    /** "console" logs to stdout; "smtp" is reserved for a real transport. */
+    /** "console" logs to stdout; "resend" delivers through the Resend API. */
     transport: readString('EMAIL_TRANSPORT', 'console'),
     /** Inbox that receives the contact notifications. */
     to: readString('CONTACT_TO', 'contacto.mfsoluciones@gmail.com'),
-    from: readString('CONTACT_FROM', 'contacto.mfsoluciones@gmail.com')
+    /**
+     * Sender address. Resend only accepts a domain you have verified with them,
+     * so a Gmail address will be rejected — use `onboarding@resend.dev` until a
+     * domain is set up. The visitor's address goes in Reply-To either way, so
+     * replying to the notification always reaches the right person.
+     */
+    from: readString('CONTACT_FROM', 'onboarding@resend.dev'),
+    /** API key for the Resend transport. Empty when the transport is "console". */
+    resendApiKey: readString('RESEND_API_KEY', '')
   },
 
   contactRateLimit: {

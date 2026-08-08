@@ -7,17 +7,17 @@
  * whether an unknown category is an error, is a business rule and belongs to
  * project.service.ts, not here.
  */
+import projectsData from '../../data/projects.json' with { type: 'json' };
+
 import type { Project } from '../../domain/entities.js';
 import type { ProjectRepository } from '../contracts.js';
 import { byOrder } from '../../shared/sort.js';
-import { readCollection } from '../json-store.js';
 
-const FILE = 'projects.json';
+const projects = projectsData as unknown as Project[];
 
 export const jsonProjectRepository: ProjectRepository = {
   /** Returns every project, sorted for display. */
   async findAll(): Promise<Project[]> {
-    const projects = await readCollection<Project>(FILE);
     return [...projects].sort(byOrder);
   },
 
@@ -28,7 +28,6 @@ export const jsonProjectRepository: ProjectRepository = {
    * @returns Matching projects, sorted. Empty array when nothing matches.
    */
   async findByCategory(category: string): Promise<Project[]> {
-    const projects = await readCollection<Project>(FILE);
     return projects.filter((project) => project.category === category).sort(byOrder);
   }
 };

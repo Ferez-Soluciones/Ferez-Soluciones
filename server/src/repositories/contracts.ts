@@ -43,6 +43,17 @@ export type NewLead = Omit<Lead, 'id' | 'createdAt'>;
 
 export interface LeadRepository {
   /**
+   * Whether a stored lead survives the process that stored it.
+   *
+   * False on serverless platforms, where the filesystem is read-only and `/tmp`
+   * disappears with the instance. The contact service reads this to decide how
+   * seriously to treat a failed notification email: when storage is durable a
+   * lost email is an annoyance, when it is not, the email is the only copy of
+   * the lead and failing to send it has to fail the request.
+   */
+  readonly isDurable: boolean;
+
+  /**
    * Persists a contact submission.
    *
    * @param lead - Validated submission data.

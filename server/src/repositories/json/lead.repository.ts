@@ -16,6 +16,9 @@ import { appendToCollection, readCollection } from '../json-store.js';
 const FILE = 'leads.json';
 
 export const jsonLeadRepository: LeadRepository = {
+  /** Writes land on a real disk that outlives the request. */
+  isDurable: true,
+
   /**
    * Appends a lead to the collection.
    *

@@ -61,24 +61,66 @@ const consoleTransport: EmailTransport = {
 };
 
 /**
+ * Production transport: delivers through the Resend HTTP API.
+ *
+ * Chosen over SMTP because it needs no long-lived connection, which is what a
+ * serverless function can actually do — and no dependency either, since it is a
+ * single `fetch` against a JSON endpoint.
+ *
+ * Note on addresses: Resend only accepts a `from` on a domain verified in your
+ * account, so `CONTACT_FROM` cannot be the Gmail inbox that receives the mail.
+ * `onboarding@resend.dev` works until a domain is set up. `replyTo` carries the
+ * visitor's address, so hitting reply always answers the right person.
+ */
+const resendTransport: EmailTransport = {
+  name: 'resend',
+  async send(message: EmailMessage): Promise<void> {
+    if (!env.email.resendApiKey) {
+      throw new Error('RESEND_API_KEY is not set — cannot send the notification email.');
+    }
+
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${env.email.resendApiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: message.from,
+        to: [message.to],
+        subject: message.subject,
+        text: message.text,
+        ...(message.replyTo ? { reply_to: message.replyTo } : {})
+      })
+    });
+
+    if (!response.ok) {
+      // Include the body: Resend explains rejections (unverified domain, bad
+      // key) in it, and without that the failure is impossible to diagnose.
+      const detail = await response.text().catch(() => '');
+      throw new Error(`Resend rejected the message (${response.status}): ${detail}`);
+    }
+  }
+};
+
+/**
  * Picks the transport described by `EMAIL_TRANSPORT`.
  *
  * An unknown value falls back to the console transport with a warning rather
- * than throwing: a typo in an env var should never stop a landing page from
- * accepting leads, especially since the lead is stored regardless.
+ * than throwing: a typo in an env var should not stop the server from booting.
+ * Whether a failed delivery is fatal for a given request is decided by
+ * contact.service.ts, which knows if the lead was stored anywhere else.
  */
 function resolveTransport(): EmailTransport {
   switch (env.email.transport) {
     case 'console':
       return consoleTransport;
 
-    // To send for real, add a transport here — e.g. a nodemailer-backed object:
-    //
-    //   case 'smtp':
-    //     return smtpTransport;
-    //
-    // It only has to expose `name` and `send`, so nothing else in the codebase
-    // needs to change.
+    case 'resend':
+      return resendTransport;
+
+    // Any other provider only has to expose `name` and `send`, so adding one is
+    // a new object here and a new case — nothing else in the codebase changes.
 
     default:
       logger.warn(
