@@ -1,5 +1,5 @@
 {
-  "name": "@vertex/server",
+  "name": "@ferez/server",
   "version": "1.0.0",
   "private": true,
   "type": "module",

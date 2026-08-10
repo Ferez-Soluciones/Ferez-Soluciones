@@ -1,4 +1,4 @@
-# Vertex Studio — Landing Page
+# Ferez Soluciones — Landing Page
 
 High-conversion landing page for a web design studio, rebuilt as a **Node.js + React**
 monorepo with a strict layered architecture.
@@ -58,9 +58,18 @@ Two examples of why the boundaries are drawn where they are:
   (which only knows how to fetch records).
 - **Contact submission** is the fan-out branch of the diagram:
   `contact.controller` → `contact.service` → `lead.repository` **and**
-  `email.service`. The lead is stored first; a failed notification is logged and
-  swallowed, because losing a real lead over an email problem would be worse than
-  a missing notification.
+  `email.service`. What happens when the email fails depends on whether the lead
+  was stored durably:
+  - **Durable storage** (a server with a disk): the failure is logged and
+    swallowed. Losing a real lead over an email problem would be worse than a
+    missing notification.
+  - **Ephemeral storage** (serverless): the email is the only copy, so the
+    request is rejected with 502 and the visitor is pointed at WhatsApp.
+
+  Note that "the email failed" is not the same as "sending threw". The console
+  transport resolves without delivering anything, so `EmailTransport` declares
+  `guaranteesDelivery` and the service checks that flag. Trusting the absence of
+  an exception is exactly how a lead disappears in silence.
 
 ### Why no database
 
@@ -74,10 +83,15 @@ filesystem. Swapping in a real database means writing new adapters and
 re-pointing the six lines in `repositories/index.ts` — services, controllers and
 routes stay untouched.
 
-`repositories/json-store.ts` handles the parts of file storage that are easy to
-get wrong: content is parsed once and cached, `leads.json` is written with a
+Content is `import`ed as a module rather than read with `fs`, so the bundler
+inlines it and the same code works on a serverless host with no readable disk.
+`repositories/json-store.ts` therefore handles only writable state — the leads —
+and handles the parts that are easy to get wrong: the file is written with a
 temp-file-plus-rename so a crash cannot truncate it, and writes are queued so two
 simultaneous submissions cannot overwrite each other.
+
+Runtime state lives in `server/data/`, deliberately outside both `src/` (which
+holds committed content) and `dist/` (which the build deletes).
 
 ---
 
@@ -102,7 +116,9 @@ Responses always use the same envelope:
 ```
 
 `POST /api/contact` is rate limited to 5 submissions per IP per hour
-(`CONTACT_RATE_LIMIT_MAX`), because it is public and writes to disk.
+(`CONTACT_RATE_LIMIT_MAX`), because it is public and does real work. The counter
+is per process: a genuine hourly limit on a long-running server, and only a
+burst brake on serverless, where each cold start begins with an empty counter.
 
 ---
 
@@ -115,7 +131,9 @@ Responses always use the same envelope:
 | `server/src/data/testimonials.json` | Testimonios |
 | `server/src/data/faqs.json` | FAQ |
 | `server/src/data/stats.json` | Métricas |
-| `server/src/data/leads.json` | Contact submissions (runtime, git-ignored) |
+
+Contact submissions are **not** content: they are written at runtime to
+`server/data/leads.json`, which is git-ignored and created on first use.
 
 Keys are English, values are the Spanish copy shown to visitors. Every record
 carries an `order` field, so reordering a section is a JSON edit.
@@ -193,14 +211,30 @@ nothing else in the codebase changes.
 {
   "buildCommand": "npm run build --workspace client",  // → client/dist
   "outputDirectory": "client/dist",                    // the static site
+  "installCommand": "npm install",                     // installs both workspaces
+  "functions": { "api/index.ts": { "maxDuration": 30 } },
   "rewrites": [{ "source": "/api/(.*)", "destination": "/api" }]
 }
 ```
+
+No `framework` preset: the Vite project lives in `client/`, not at the repo root,
+so declaring one at the root makes Vercel apply defaults built for a different
+layout. `maxDuration` is raised because `POST /api/contact` makes an outbound
+call to Resend, and the default ceiling is 10 seconds.
 
 `api/index.ts` is the serverless entry point. It reuses `createApp()` untouched —
 which is why app assembly and process startup were split into two modules in the
 first place: `server/src/index.ts` binds a port, `api/index.ts` hands the same app
 to Vercel.
+
+It also normalises `req.url` to start with `/api` before Express sees it. Whether
+a rewritten request arrives with its original path or the destination path is not
+something this codebase should bet on: if the prefix were dropped, every endpoint
+would 404 in production while working perfectly in development.
+
+**Set the Node version to 22.x in Project Settings → General.** `engines.node` is
+a range here so local installs on newer Node do not warn, and a range is not a
+form Vercel pins on.
 
 Set these in **Project Settings → Environment Variables**:
 
@@ -230,10 +264,16 @@ delivery failure returns 502 and tells the visitor to write directly. Answering
 "¡Gracias!" while the message evaporates would be the worst outcome for a page
 whose entire job is collecting these.
 
+Crucially, this covers the *silent* case too. The `console` transport resolves
+without sending anything, so on serverless it would otherwise report success
+while the lead evaporated. `EmailTransport.guaranteesDelivery` is what the
+service checks; a submission that can be neither stored nor delivered is refused
+before it is accepted, and the mismatch is logged loudly at boot.
+
 To exercise that path locally:
 
 ```bash
-SERVERLESS=1 EMAIL_TRANSPORT=resend npm run dev:server   # no key → 502, as intended
+SERVERLESS=1 EMAIL_TRANSPORT=console npm run dev:server   # every POST → 502, by design
 ```
 
 ---
@@ -246,7 +286,8 @@ SERVERLESS=1 EMAIL_TRANSPORT=resend npm run dev:server   # no key → 502, as in
 | `npm run dev:server` / `npm run dev:client` | One at a time |
 | `npm run build` | Compiles the server and bundles the client |
 | `npm start` | Runs the production build on a single port |
-| `npm run typecheck` | Type-checks both workspaces |
+| `npm run typecheck` | Type-checks `server`, `client` **and** the `api/` function |
+| `npm run lint` | ESLint, with the rules of hooks as errors |
 
 ---
 
@@ -264,8 +305,16 @@ animation and the scroll reveals are skipped entirely, not merely shortened.
 
 ---
 
-## `legacy/`
+## Known gaps
 
-The original static site (`index.html`, `styles/main.css`, `js/app.js`) is kept
-there as the visual reference for this rebuild. Delete the folder once you have
-compared the two side by side — the files also remain in git history.
+Found in review, deliberately not fixed yet:
+
+- Body-parser failures (malformed JSON, oversized body) surface as 500 instead of
+  400/413.
+- The SPA fallback is `app.get('*')` only, so a non-GET request to an unknown
+  path falls through to Express's HTML 404 instead of the JSON envelope.
+- The business-category list is written out in five places (`entities.ts`,
+  `contact.dto.ts`, `contact.service.ts`, `client/types/api.ts`,
+  `client/content/site.ts`) and can drift without a compile error.
+- `json-store` leaks a `.tmp` file if the atomic rename fails.
+- Graceful shutdown has no timeout, so one hung connection blocks exit.

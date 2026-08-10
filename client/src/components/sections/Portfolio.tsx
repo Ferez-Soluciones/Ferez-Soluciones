@@ -74,24 +74,29 @@ export function Portfolio() {
 
         {error ? <ErrorState message={error} onRetry={retry} /> : null}
 
-        {projects && projects.length > 0 ? (
-          <div
-            className={`projects${loading ? ' is-loading' : ''}`}
-            id="projects"
-            aria-live="polite"
-            aria-busy={loading}
-          >
-            {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
-        ) : null}
+        {/*
+          The live region wraps BOTH outcomes and is never unmounted while the
+          section is on screen. A live region only announces changes that happen
+          inside an element the screen reader is already watching — the previous
+          version put `aria-live` on the results grid itself, so filtering to an
+          empty category destroyed the region and rendered the empty message
+          outside it. The one change most worth announcing was the one nobody heard.
+        */}
+        <div id="projects-live" aria-live="polite" aria-busy={loading}>
+          {projects && projects.length > 0 ? (
+            <div className={`projects${loading ? ' is-loading' : ''}`} id="projects">
+              {projects.map((project) => (
+                <ProjectCard key={project.id} project={project} />
+              ))}
+            </div>
+          ) : null}
 
-        {isEmpty && !error ? (
-          <p className="projects__empty" id="projectsEmpty">
-            No hay proyectos en esta categoría todavía.
-          </p>
-        ) : null}
+          {isEmpty && !error ? (
+            <p className="projects__empty" id="projectsEmpty">
+              No hay proyectos en esta categoría todavía.
+            </p>
+          ) : null}
+        </div>
       </div>
     </section>
   );

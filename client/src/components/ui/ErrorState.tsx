@@ -17,8 +17,8 @@ interface ErrorStateProps {
 
 export function ErrorState({ message, onRetry }: ErrorStateProps) {
   return (
-    <div className="projects__empty" role="alert">
-      <p>{message}</p>
+    <div className="error-state" role="alert">
+      <p className="error-state__message">{message}</p>
       <button className="btn btn--ghost btn--sm" type="button" onClick={onRetry}>
         Reintentar
       </button>

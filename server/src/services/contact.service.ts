@@ -12,7 +12,7 @@ import { repositories } from '../repositories/index.js';
 import { ApiError } from '../shared/api-error.js';
 import { logger } from '../shared/logger.js';
 import { env } from '../config/env.js';
-import { sendEmail } from './email.service.js';
+import { sendEmail, transportGuaranteesDelivery } from './email.service.js';
 
 /** Human readable labels for the business types offered by the form. */
 const BUSINESS_TYPE_LABELS: Record<string, string> = {
@@ -38,15 +38,32 @@ const BUSINESS_TYPE_LABELS: Record<string, string> = {
  *   response. Failing the request would throw away a real lead over a problem
  *   the visitor can do nothing about.
  * - Ephemeral storage (serverless): there is no second copy. The email IS the
- *   lead, so failing to send it has to fail the request — answering "¡Gracias!"
- *   while the message evaporates is the worst possible outcome for a landing
- *   page whose entire purpose is collecting these.
+ *   lead, so anything short of confirmed delivery has to fail the request —
+ *   answering "¡Gracias!" while the message evaporates is the worst possible
+ *   outcome for a landing page whose entire purpose is collecting these.
+ *
+ * The second case is not just about exceptions. The console transport resolves
+ * happily without sending anything, so "no error" is not evidence of delivery;
+ * `transportGuaranteesDelivery()` is. Checking only for a thrown error is
+ * precisely how a lead disappears in silence.
  *
  * @param dto - Payload already validated by `createLeadSchema`.
  * @returns The stored lead, with its generated id and timestamp.
- * @throws {ApiError} 502 when the lead could be neither stored durably nor sent.
+ * @throws {ApiError} 502 when the lead can be neither stored durably nor delivered.
  */
 export async function submitContact(dto: CreateLeadDto): Promise<Lead> {
+  const durable = repositories.leads.isDurable;
+
+  // Checked before doing any work: if neither path can keep this lead, taking
+  // the submission at all would be lying to the visitor.
+  if (!durable && !transportGuaranteesDelivery()) {
+    logger.error(
+      'Refusing a contact submission: storage is ephemeral and the email transport does not deliver. ' +
+        'Set EMAIL_TRANSPORT=resend and RESEND_API_KEY, or deploy somewhere with a writable disk.'
+    );
+    throw deliveryFailure();
+  }
+
   const lead = await repositories.leads.create({
     name: dto.nombre,
     email: dto.email,
@@ -64,23 +81,30 @@ export async function submitContact(dto: CreateLeadDto): Promise<Lead> {
       text: buildNotificationBody(lead)
     });
   } catch (error) {
-    if (repositories.leads.isDurable) {
+    if (durable) {
       logger.error(`Lead ${lead.id} was stored but the notification email failed.`, error);
       return lead;
     }
 
     logger.error(`Lead ${lead.id} could not be stored nor delivered — rejecting the request.`, error);
-
-    // Point the visitor at a channel that does not depend on this server, so a
-    // broken notification pipeline does not cost the studio the conversation.
-    throw new ApiError(
-      502,
-      `No pudimos registrar tu consulta. Escribinos directamente a ${env.email.to} o por WhatsApp.`,
-      'CONTACT_DELIVERY_FAILED'
-    );
+    throw deliveryFailure();
   }
 
   return lead;
+}
+
+/**
+ * The 502 returned when a submission cannot be kept.
+ *
+ * It names a channel that does not depend on this server, so a broken pipeline
+ * costs the studio a round trip rather than the conversation.
+ */
+function deliveryFailure(): ApiError {
+  return new ApiError(
+    502,
+    `No pudimos registrar tu consulta. Escribinos directamente a ${env.email.to} o por WhatsApp.`,
+    'CONTACT_DELIVERY_FAILED'
+  );
 }
 
 /** Renders the plain-text body of the notification email. */

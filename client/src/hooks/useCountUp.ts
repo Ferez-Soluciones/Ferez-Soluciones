@@ -40,17 +40,38 @@ export function useCountUp<T extends HTMLElement = HTMLElement>(
   const prefersReducedMotion = usePrefersReducedMotion();
   const [current, setCurrent] = useState(() => (prefersReducedMotion ? value : 0));
   const frameRef = useRef<number | null>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // Cancel any in-flight animation when the component goes away, otherwise the
-  // callback would call setState on an unmounted component.
-  useEffect(() => {
-    return () => {
-      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
-    };
+  /**
+   * Tears down whatever is currently running.
+   *
+   * Both handles have to be released together. Keeping only the frame id — as an
+   * earlier version did — left the observer alive on a detached node; keeping
+   * only the observer left an unstoppable rAF loop calling setState after
+   * unmount.
+   */
+  const stop = useCallback(() => {
+    if (frameRef.current !== null) {
+      cancelAnimationFrame(frameRef.current);
+      frameRef.current = null;
+    }
+    observerRef.current?.disconnect();
+    observerRef.current = null;
   }, []);
+
+  // The ref callback below cannot clean up after itself on unmount, because
+  // React calls it with null and there is nothing left to hang the teardown on.
+  useEffect(() => stop, [stop]);
 
   const ref = useCallback(
     (node: T | null) => {
+      // Always tear down first. React calls the ref with null on unmount AND
+      // whenever this callback's identity changes (value or motion preference).
+      // Skipping this on the null branch is what used to leave two observers on
+      // the same element, each driving its own animation loop against the same
+      // state — the number visibly jittered.
+      stop();
+
       if (!node) return;
 
       if (prefersReducedMotion || !('IntersectionObserver' in window)) {
@@ -66,6 +87,7 @@ export function useCountUp<T extends HTMLElement = HTMLElement>(
           // One-shot: stop observing before animating so a fast scroll cannot
           // restart the count halfway through.
           observer.disconnect();
+          observerRef.current = null;
 
           const start = performance.now();
           const tick = (now: number) => {
@@ -73,7 +95,7 @@ export function useCountUp<T extends HTMLElement = HTMLElement>(
             const eased = 1 - Math.pow(1 - progress, 3);
 
             setCurrent(Math.round(value * eased));
-            if (progress < 1) frameRef.current = requestAnimationFrame(tick);
+            frameRef.current = progress < 1 ? requestAnimationFrame(tick) : null;
           };
 
           frameRef.current = requestAnimationFrame(tick);
@@ -81,9 +103,10 @@ export function useCountUp<T extends HTMLElement = HTMLElement>(
         { threshold: VISIBILITY_THRESHOLD }
       );
 
+      observerRef.current = observer;
       observer.observe(node);
     },
-    [value, prefersReducedMotion]
+    [value, prefersReducedMotion, stop]
   );
 
   return { ref, display: `${current}${suffix}` };

@@ -2,14 +2,16 @@
  * LAYER: Middlewares
  * Responsibility: cap how many times the same client can hit a write endpoint.
  *
- * `POST /api/contact` is public and writes to disk, so it needs a brake. A
- * dedicated library would bring Redis-backed stores and distributed counters
- * this project has no use for: a single-process landing page is served by one
- * Node instance, so an in-memory map is both sufficient and dependency-free.
+ * `POST /api/contact` is public and does real work — a disk write, an outbound
+ * email — so it needs a brake. A dedicated library would bring Redis-backed
+ * stores and distributed counters this project has no use for.
  *
- * Trade-off worth knowing: counters reset on restart and are not shared across
- * instances. For abuse protection on a contact form that is acceptable; for
- * anything security-critical it would not be.
+ * Know what this does and does not buy you: the counter lives in one process's
+ * memory. On a long-running server that is a genuine per-IP hourly limit. On a
+ * serverless host it is not — every cold start begins with an empty map and
+ * instances are created freely, so it degrades to "a brake on bursts within a
+ * single warm instance". That is still worth having against a naive script, and
+ * it is not a security control on either host.
  */
 import type { NextFunction, Request, RequestHandler, Response } from 'express';
 

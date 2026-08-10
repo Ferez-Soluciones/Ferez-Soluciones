@@ -29,18 +29,31 @@ export interface EmailMessage {
 /** Anything capable of delivering an `EmailMessage`. */
 export interface EmailTransport {
   readonly name: string;
+
+  /**
+   * Whether a resolved `send()` means the message actually left the building.
+   *
+   * This is NOT the same as "did not throw", and the difference is what makes it
+   * worth a flag. The console transport always resolves — it just prints — so a
+   * caller checking only for exceptions would conclude the mail went out. On a
+   * host with no durable storage that mistake silently destroys leads, so the
+   * contact service reads this instead of trusting the absence of an error.
+   */
+  readonly guaranteesDelivery: boolean;
+
   send(message: EmailMessage): Promise<void>;
 }
 
 /**
  * Default transport: writes the message to the server log.
  *
- * Not a placeholder to be replaced before launch — for a landing page whose
- * leads are already persisted in `leads.json`, this is a perfectly serviceable
- * default, and it removes SMTP credentials from the setup entirely.
+ * Fine for local development, and fine in production too — but only where the
+ * lead is also written to disk, because printing is not delivering. See
+ * `guaranteesDelivery` and the boot check in `assertDeliveryPathIsSound()`.
  */
 const consoleTransport: EmailTransport = {
   name: 'console',
+  guaranteesDelivery: false,
   async send(message: EmailMessage): Promise<void> {
     logger.info(
       [
@@ -74,6 +87,7 @@ const consoleTransport: EmailTransport = {
  */
 const resendTransport: EmailTransport = {
   name: 'resend',
+  guaranteesDelivery: true,
   async send(message: EmailMessage): Promise<void> {
     if (!env.email.resendApiKey) {
       throw new Error('RESEND_API_KEY is not set — cannot send the notification email.');
@@ -146,4 +160,32 @@ export async function sendEmail(message: EmailMessage): Promise<void> {
 /** Name of the active transport, used in the startup banner. */
 export function activeTransportName(): string {
   return transport.name;
+}
+
+/**
+ * Whether the active transport actually delivers, as opposed to merely not
+ * failing. Read by contact.service.ts to decide if a submission can be accepted.
+ */
+export function transportGuaranteesDelivery(): boolean {
+  return transport.guaranteesDelivery;
+}
+
+/**
+ * Warns at boot when the deployment cannot keep a lead by any route.
+ *
+ * Called from the entry point rather than left to the first submission: on a
+ * serverless host the failure is invisible from the outside — the form answers
+ * 502 and there is nothing in the inbox to notice — so the operator has to learn
+ * about it from the startup logs, not from the leads that never arrive.
+ *
+ * @param storageIsDurable - Whether the selected lead repository survives the process.
+ */
+export function assertDeliveryPathIsSound(storageIsDurable: boolean): void {
+  if (storageIsDurable || transport.guaranteesDelivery) return;
+
+  logger.error(
+    `Leads CANNOT be kept: storage is ephemeral and EMAIL_TRANSPORT="${transport.name}" does not deliver. ` +
+      'The contact form will reject every submission with 502 until this is fixed. ' +
+      'Set EMAIL_TRANSPORT=resend and RESEND_API_KEY.'
+  );
 }

@@ -15,7 +15,7 @@
  * - Every request is aborted on unmount or when the dependencies change, so a
  *   slow response for "gastronomía" can never overwrite a newer one for "salud".
  */
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { ApiError } from '../api/http.js';
 
@@ -44,9 +44,18 @@ export function useApi<T>(
   const [attempt, setAttempt] = useState(0);
 
   // Kept in a ref so changing the fetcher identity between renders does not
-  // retrigger the effect — `deps` is the intended trigger.
+  // retrigger the effect — `deps` is the intended trigger. Written in a layout
+  // effect rather than during render: a render that React discards must not be
+  // able to leave a mutation behind.
   const fetcherRef = useRef(fetcher);
-  fetcherRef.current = fetcher;
+  useLayoutEffect(() => {
+    fetcherRef.current = fetcher;
+  });
+
+  // Serialised to a single primitive so the dependency array has a FIXED length.
+  // Spreading a caller-supplied array (`[...deps, attempt]`) makes the length
+  // depend on the caller, and React throws the moment one of them varies.
+  const depsKey = JSON.stringify(deps);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -66,6 +75,10 @@ export function useApi<T>(
         // newer, or the component went away.
         if (controller.signal.aborted || !active) return;
 
+        // Data is cleared alongside setting the error so the two states can
+        // never be truthy at once. Leaving stale data behind made the portfolio
+        // render an error message above the previous filter's results.
+        setData(null);
         setError(
           cause instanceof ApiError
             ? cause.message
@@ -80,8 +93,7 @@ export function useApi<T>(
       active = false;
       controller.abort();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...deps, attempt]);
+  }, [depsKey, attempt]);
 
   const retry = useCallback(() => setAttempt((value) => value + 1), []);
 

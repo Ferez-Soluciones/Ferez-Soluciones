@@ -15,7 +15,9 @@ import { useReveal } from '../../hooks/useReveal.js';
 
 export function Hero() {
   return (
-    <section className="hero" id="hero">
+    // aria-labelledby points at the h1 so the hero is a NAMED region in the
+    // landmark list, like every other section. It was the only unnamed one.
+    <section className="hero" id="hero" aria-labelledby="hero-title">
       <div className="hero__glow" aria-hidden="true" />
       <div className="container hero__inner">
         <div className="hero__content">
@@ -23,7 +25,7 @@ export function Hero() {
             {HERO.eyebrow}
           </p>
 
-          <h1 className="hero__title" data-reveal ref={useReveal<HTMLHeadingElement>()}>
+          <h1 className="hero__title" id="hero-title" data-reveal ref={useReveal<HTMLHeadingElement>()}>
             {HERO.titleBefore}
             <span className="text-gradient">{HERO.titleHighlight}</span>
             {HERO.titleAfter}
@@ -55,7 +57,7 @@ export function Hero() {
           <div
             className="browser"
             role="img"
-            aria-label="Vista previa de una landing page diseñada por Vertex Studio"
+            aria-label="Vista previa de una landing page diseñada por Ferez Soluciones"
           >
             <div className="browser__bar">
               <span className="browser__dot" />

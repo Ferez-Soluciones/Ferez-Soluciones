@@ -30,14 +30,33 @@ function getSharedObserver(): IntersectionObserver {
 
   sharedObserver = new IntersectionObserver(
     (entries, observer) => {
-      entries.forEach((entry, index) => {
-        if (!entry.isIntersecting) return;
+      // Counted separately from the array index: a batch also carries elements
+      // that just LEFT the viewport, and letting those consume a slot made the
+      // delays jump (0, 140, 350ms) instead of cascading evenly.
+      let revealed = 0;
+
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
 
         const element = entry.target as HTMLElement;
-        element.style.transitionDelay = `${index * STAGGER_STEP_MS}ms`;
+        const delay = revealed * STAGGER_STEP_MS;
+        revealed += 1;
+
+        element.style.transitionDelay = `${delay}ms`;
         element.classList.add('is-visible');
         observer.unobserve(element);
-      });
+
+        // The delay is for the entrance only. Left in place it would also apply
+        // to every later transition on the element — the portfolio cards' hover
+        // lift would lag by up to half a second.
+        element.addEventListener(
+          'transitionend',
+          () => {
+            element.style.transitionDelay = '';
+          },
+          { once: true }
+        );
+      }
     },
     { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
   );

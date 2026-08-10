@@ -1,40 +1,48 @@
 /**
  * LAYER: Repositories (infrastructure)
- * Responsibility: everything delicate about reading and writing JSON files, so
- * that each repository above it can stay a handful of trivial lines.
+ * Responsibility: everything delicate about persisting runtime state as JSON, so
+ * the lead repository above it can stay a handful of trivial lines.
  * Must not know about: entities, business rules, HTTP.
  *
- * Three problems are solved here, and they are the reason this file exists
- * instead of every repository calling `fs` directly:
+ * Scope note: this module handles WRITABLE state only — in practice, the leads
+ * collection. The content collections are `import`ed as modules by their
+ * repositories, so they never touch the filesystem at all; that is what lets the
+ * same code run on a serverless host where nothing is readable from disk.
  *
- * 1. Repeated reads. Content files never change while the process runs, so they
- *    are parsed once and cached. Without this, every page load would re-read and
- *    re-parse five files.
- * 2. Torn writes. `leads.json` is rewritten in full on each submission. Writing
- *    in place means a crash mid-write leaves a truncated, unparseable file — and
+ * Two problems are solved here, and they are the reason this file exists instead
+ * of the lead repository calling `fs` directly:
+ *
+ * 1. Torn writes. The file is rewritten in full on each submission. Writing in
+ *    place means a crash mid-write leaves a truncated, unparseable file — and
  *    every previous lead is lost with it. We write to a temp file and rename,
  *    which is atomic on the same filesystem.
- * 3. Concurrent writes. Two visitors submitting at the same time would both do
+ * 2. Concurrent writes. Two visitors submitting at the same time would both do
  *    read → push → write and the slower one would overwrite the faster one's
  *    lead. Mutations are therefore queued and run strictly one at a time.
  */
 import { randomUUID } from 'node:crypto';
-import { readFile, rename, writeFile } from 'node:fs/promises';
+import { readFile, mkdir, rename, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { logger } from '../shared/logger.js';
 
 /**
- * Absolute path of the data directory.
+ * Absolute path of the runtime data directory: `server/data/`.
  *
- * Resolved from this module's own location rather than `process.cwd()` so the
- * server works the same whether it is started from the repo root, from
- * `server/`, or from `dist/` after a build.
+ * Resolved from this module's own location rather than `process.cwd()`, so the
+ * server behaves the same whether it is started from the repo root or from
+ * `server/`. The two-level climb is what makes `src/repositories/` and
+ * `dist/repositories/` land on the SAME directory.
+ *
+ * That matters more than it looks: with a single-level climb the compiled server
+ * wrote leads into `dist/data/`, which `npm run build` deletes — every build
+ * silently destroyed the collected leads. Runtime state must live outside the
+ * build output. Committed content stays in `src/data/`, where it is imported.
  */
-const DATA_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '../data');
+const DATA_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '../../data');
 
-/** Parsed content files, keyed by filename. Content is immutable at runtime. */
+/** In-memory copy of each writable collection, kept in sync on every append. */
 const cache = new Map<string, unknown>();
 
 /**
@@ -51,10 +59,10 @@ function pathOf(fileName: string): string {
 /**
  * Reads and parses a JSON array, caching the result.
  *
- * @param fileName - File name inside `src/data`, e.g. "projects.json".
- * @returns The parsed array. Missing files resolve to an empty array, because a
- *          content file that has not been created yet is a normal state (see
- *          `leads.json`), not an error worth crashing the server over.
+ * @param fileName - File name inside `server/data`, e.g. "leads.json".
+ * @returns The parsed array. A missing file resolves to an empty array, because
+ *          "no lead has been submitted yet" is a normal state, not an error
+ *          worth crashing the server over.
  */
 export async function readCollection<T>(fileName: string): Promise<T[]> {
   const cached = cache.get(fileName);
@@ -78,7 +86,7 @@ export async function readCollection<T>(fileName: string): Promise<T[]> {
 /**
  * Appends an item to a JSON collection, atomically and one writer at a time.
  *
- * @param fileName - File name inside `src/data`.
+ * @param fileName - File name inside `server/data`.
  * @param item - The record to append.
  * @returns The appended record (returned unchanged, for call-site convenience).
  */
@@ -89,6 +97,11 @@ export async function appendToCollection<T>(fileName: string, item: T): Promise<
   const operation = writeQueue.then(async () => {
     const current = await readCollection<T>(fileName);
     const next = [...current, item];
+
+    // The directory holds only runtime state, so it is git-ignored and absent on
+    // a fresh clone. Creating it on demand keeps the first submission from
+    // failing on ENOENT.
+    await mkdir(DATA_DIR, { recursive: true });
 
     const target = pathOf(fileName);
     const temporary = `${target}.${randomUUID()}.tmp`;

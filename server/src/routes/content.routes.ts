@@ -15,8 +15,6 @@ export const contentRoutes = Router();
 
 contentRoutes.get('/services', getServices);
 
-// Registered before "/projects" is irrelevant here (different paths), but the
-// categories route is kept adjacent to its collection for readability.
 contentRoutes.get('/projects', getProjects);
 contentRoutes.get('/projects/categories', getProjectCategories);
 

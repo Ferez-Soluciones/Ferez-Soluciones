@@ -14,11 +14,14 @@
 
 /** Studio identity, reused by the header, the footer and the JSON-LD block. */
 export const SITE = {
-  name: 'Vertex Studio',
-  nameParts: { first: 'Vertex', second: 'Studio' },
+  name: 'Ferez Soluciones',
+  /* Rendered run together in the logo ("FerezSoluciones"), with the second half
+     accented. `name` keeps the space for prose, aria-labels and structured data. */
+  nameParts: { first: 'Ferez', second: 'Soluciones' },
   email: 'contacto.mfsoluciones@gmail.com',
-  phoneDisplay: '+54 9 11 5555-5555',
-  whatsappUrl: 'https://wa.me/5491155555555',
+  phoneDisplay: '+54 9 11 3264-5016',
+  /* wa.me wants digits only: country (54) + mobile marker (9) + area (11) + number. */
+  whatsappUrl: 'https://wa.me/5491132645016',
   instagramUrl: 'https://www.instagram.com/',
   linkedinUrl: 'https://www.linkedin.com/',
   scheduleLabel: 'Lunes a viernes, 9 a 18 h (ART)'

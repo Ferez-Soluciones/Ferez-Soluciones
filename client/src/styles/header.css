@@ -52,10 +52,22 @@
   overflow: hidden;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
-  transition: max-height 320ms ease;
+
+  /* `max-height: 0` hides the drawer but leaves its links focusable, so keyboard
+     users tabbed through six invisible links before reaching the page while the
+     toggle reported aria-expanded="false". `visibility: hidden` takes them out
+     of the tab order; delaying it until the collapse finishes keeps the closing
+     animation visible instead of cutting it off at frame one. */
+  visibility: hidden;
+  transition: max-height 320ms ease, visibility 0s linear 320ms;
 }
 
-.nav.is-open { max-height: 460px; box-shadow: var(--shadow-md); }
+.nav.is-open {
+  max-height: 460px;
+  box-shadow: var(--shadow-md);
+  visibility: visible;
+  transition: max-height 320ms ease, visibility 0s;
+}
 
 .nav__list {
   display: flex;
@@ -119,6 +131,12 @@
     background: transparent;
     border: 0;
     box-shadow: none;
+
+    /* Mandatory: the mobile drawer hides itself with `visibility: hidden` unless
+       `.is-open`, and above this breakpoint there is no toggle to open it. Without
+       this reset the entire desktop navigation would be invisible. */
+    visibility: visible;
+    transition: none;
   }
 
   .nav__list {

@@ -8,8 +8,13 @@ dist/
 .env
 .env.local
 
-# Runtime data (leads are written by the server at runtime)
-server/src/data/leads.json
+# Runtime data. Kept out of server/src/data/ — which holds committed content —
+# and out of dist/, which the build deletes.
+server/data/
+
+# Incremental build caches. Committing these lets a fresh CI checkout decide the
+# project is already up to date and skip type-checking entirely.
+*.tsbuildinfo
 
 # Logs
 *.log

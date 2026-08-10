@@ -1,5 +1,5 @@
 /* =========================================================
-   Vertex Studio — main.css
+   Ferez Soluciones — main.css
 
    Metodología BEM · Mobile-First · CSS Custom Properties
 
@@ -19,6 +19,8 @@
 @import './base.css';
 @import './utilities.css';
 @import './buttons.css';
+
+@import './error-state.css';
 
 @import './header.css';
 @import './hero.css';

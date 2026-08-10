@@ -1,5 +1,5 @@
 /**
- * Vite configuration for the Vertex Studio client.
+ * Vite configuration for the Ferez Soluciones client.
  *
  * The dev server proxies `/api` to the Express server so the browser always
  * talks to a single origin. That way `fetch('/api/services')` is written the

@@ -31,7 +31,12 @@ export function App() {
 
       <Header />
 
-      <main id="main">
+      {/*
+        tabIndex={-1} makes <main> a valid focus target. Without it the skip link
+        scrolls the page but leaves focus in the header, so the next Tab drops the
+        user back into the navigation they just asked to skip.
+      */}
+      <main id="main" tabIndex={-1}>
         <Hero />
         <Stats />
         <Services />

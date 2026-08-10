@@ -33,13 +33,31 @@ export function useScrollSpy(sectionIds: readonly string[]): string {
 
     if (sections.length === 0) return;
 
+    // Tracks what the observer last reported per section, because a callback
+    // only carries the entries that CHANGED — deciding which section wins from a
+    // partial batch is how the highlight ends up on the wrong item.
+    const ratios = new Map<string, number>();
+
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) setActiveId(entry.target.id);
+          ratios.set(entry.target.id, entry.isIntersecting ? entry.intersectionRatio : 0);
         }
+
+        let bestId = '';
+        let bestRatio = 0;
+        for (const [id, ratio] of ratios) {
+          if (ratio > bestRatio) {
+            bestId = id;
+            bestRatio = ratio;
+          }
+        }
+
+        // Falls back to '' when nothing is in the band — otherwise the last
+        // section stays highlighted while the visitor reads the footer.
+        setActiveId(bestId);
       },
-      { rootMargin: '-45% 0px -50% 0px' }
+      { rootMargin: '-45% 0px -50% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] }
     );
 
     sections.forEach((section) => observer.observe(section));

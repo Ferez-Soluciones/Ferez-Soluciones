@@ -18,9 +18,9 @@ import { z } from 'zod';
 export const BUSINESS_TYPES = ['gastronomia', 'salud', 'servicios', 'retail', 'otro'] as const;
 
 /**
- * Same regex the legacy site used (js/app.js). Deliberately permissive: the goal
- * is to catch typos, not to fully implement RFC 5322 — a rejected real address
- * costs a lead, while a bogus one just sits unanswered in leads.json.
+ * Same regex the legacy site used. Deliberately permissive: the goal is to catch
+ * typos, not to implement RFC 5322 — rejecting a real address costs a lead,
+ * while accepting a bogus one costs one unanswered notification.
  */
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 

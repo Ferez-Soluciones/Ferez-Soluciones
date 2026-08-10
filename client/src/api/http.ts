@@ -61,9 +61,12 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   let response: Response;
 
   try {
+    // `...init` FIRST, then the keys we derive from it. The other order lets a
+    // caller's `init.headers` silently replace the merged object instead of
+    // merging into it — which is how `Accept` was being dropped from every POST.
     response = await fetch(`${API_BASE}${path}`, {
-      headers: { Accept: 'application/json', ...(init?.headers ?? {}) },
-      ...init
+      ...init,
+      headers: { Accept: 'application/json', ...(init?.headers ?? {}) }
     });
   } catch {
     // fetch only rejects when the request could not be made — DNS, offline, CORS.
@@ -96,15 +99,17 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 /** GET helper. */
 export function get<T>(path: string, init?: RequestInit): Promise<T> {
-  return request<T>(path, { method: 'GET', ...init });
+  return request<T>(path, { ...init, method: 'GET' });
 }
 
 /** POST helper that serialises `payload` as JSON. */
 export function post<T>(path: string, payload: unknown, init?: RequestInit): Promise<T> {
+  // Same ordering rule as above: the caller may add headers or an abort signal,
+  // but must not be able to override the method and body this helper exists to set.
   return request<T>(path, {
+    ...init,
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-    ...init
+    headers: { 'Content-Type': 'application/json', ...(init?.headers ?? {}) },
+    body: JSON.stringify(payload)
   });
 }

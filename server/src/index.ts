@@ -8,15 +8,21 @@
  */
 import { createApp } from './app.js';
 import { env } from './config/env.js';
-import { activeTransportName } from './services/email.service.js';
+import { repositories } from './repositories/index.js';
+import { activeTransportName, assertDeliveryPathIsSound } from './services/email.service.js';
 import { logger } from './shared/logger.js';
 
 const app = createApp();
 
 const server = app.listen(env.port, () => {
-  logger.info(`Vertex Studio API listening on http://localhost:${env.port}`);
+  logger.info(`Ferez Soluciones API listening on http://localhost:${env.port}`);
   logger.info(`Environment: ${env.nodeEnv} · Email transport: ${activeTransportName()}`);
-  logger.info('Data source: JSON files in server/src/data');
+  logger.info(
+    `Content: bundled JSON · Leads: ${repositories.leads.isDurable ? 'server/data/leads.json' : 'in memory (ephemeral)'}`
+  );
+
+  // Loud at boot rather than silent until the first lead is lost.
+  assertDeliveryPathIsSound(repositories.leads.isDurable);
 });
 
 /**
