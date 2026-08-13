@@ -4,17 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ferez Soluciones | Landing Pages que Convierten para PyMEs</title>
-  <meta name="description" content="Estudio de diseño y desarrollo de landing pages de alta conversión para pequeños negocios y PyMEs. Sitios rápidos, responsivos y optimizados para SEO. Entrega en 10 días.">
+  <meta name="description" content="Estudio de diseño y desarrollo de landing pages de alta conversión para pequeños negocios y PyMEs. Sitios rápidos, responsivos y optimizados para SEO. Entrega en 15 días.">
   <meta name="author" content="Ferez Soluciones">
   <meta name="theme-color" content="#74ACDF">
 
   <!--
-    The canonical points at where the site actually lives, not at the brand's
-    imagined domain: a canonical aimed at a host that is not ours tells Google to
-    index a page that does not exist. Update all four URLs below together the day
-    a real domain is pointed at this deployment.
+    The canonical points at the production domain, which is where the site is
+    meant to be indexed. The Vercel deployment URL stays reachable but must never
+    appear here: two hosts serving the same page and each claiming to be
+    canonical is how a duplicate gets indexed instead of the real one. The five
+    absolute URLs below (canonical, og:url, og:image, twitter:image and the
+    JSON-LD `url`) always move together.
   -->
-  <link rel="canonical" href="https://mfsoluciones.vercel.app/">
+  <link rel="canonical" href="https://ferezsoluciones.com.ar/">
 
   <!--
     Favicon: the same triangular mark as the header logo, inlined as a data URI
@@ -26,9 +28,9 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Ferez Soluciones">
   <meta property="og:title" content="Ferez Soluciones | Landing Pages que Convierten para PyMEs">
-  <meta property="og:description" content="Diseñamos y desarrollamos landing pages de alta conversión para pequeños negocios. Entrega en 10 días.">
-  <meta property="og:url" content="https://mfsoluciones.vercel.app/">
-  <meta property="og:image" content="https://mfsoluciones.vercel.app/og-image.jpg">
+  <meta property="og:description" content="Diseñamos y desarrollamos landing pages de alta conversión para pequeños negocios. Entrega en 15 días.">
+  <meta property="og:url" content="https://ferezsoluciones.com.ar/">
+  <meta property="og:image" content="https://ferezsoluciones.com.ar/og-image.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Ferez Soluciones — Landing pages para PyMEs">
@@ -37,7 +39,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Ferez Soluciones | Landing Pages que Convierten para PyMEs">
   <meta name="twitter:description" content="Diseñamos y desarrollamos landing pages de alta conversión para pequeños negocios.">
-  <meta name="twitter:image" content="https://mfsoluciones.vercel.app/og-image.jpg">
+  <meta name="twitter:image" content="https://ferezsoluciones.com.ar/og-image.jpg">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,9 +54,9 @@
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "name": "Ferez Soluciones",
-    "description": "Estudio de diseño y desarrollo de landing pages de alta conversión para PyMEs y pequeños negocios.",
-    "url": "https://mfsoluciones.vercel.app/",
-    "email": "contacto.mfsoluciones@gmail.com",
+    "description": "Estudio de diseño y desarrollo web.",
+    "url": "https://ferezsoluciones.com.ar/",
+    "email": "ferezsoluciones@gmail.com",
     "telephone": "+54-9-11-3264-5016",
     "areaServed": "AR",
     "priceRange": "$$"

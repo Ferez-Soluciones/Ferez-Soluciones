@@ -9,7 +9,7 @@
  * Under reduced motion the animation is skipped entirely and the final value is
  * rendered immediately — the information matters, the motion does not.
  */
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { usePrefersReducedMotion } from './usePrefersReducedMotion.js';
 
@@ -39,75 +39,59 @@ export function useCountUp<T extends HTMLElement = HTMLElement>(
 ): CountUpResult<T> {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [current, setCurrent] = useState(() => (prefersReducedMotion ? value : 0));
-  const frameRef = useRef<number | null>(null);
-  const observerRef = useRef<IntersectionObserver | null>(null);
 
-  /**
-   * Tears down whatever is currently running.
-   *
-   * Both handles have to be released together. Keeping only the frame id — as an
-   * earlier version did — left the observer alive on a detached node; keeping
-   * only the observer left an unstoppable rAF loop calling setState after
-   * unmount.
-   */
-  const stop = useCallback(() => {
-    if (frameRef.current !== null) {
-      cancelAnimationFrame(frameRef.current);
-      frameRef.current = null;
+  // The node is held in state, not a ref, so that attaching it re-runs the effect
+  // below. Setting up the observer inside the ref callback instead — as an
+  // earlier version did — could not survive StrictMode: React 18 re-runs effects
+  // on the simulated remount but does NOT re-invoke ref callbacks, so the effect
+  // cleanup disconnected an observer nobody would ever recreate and every counter
+  // sat at 0 for good.
+  const [node, setNode] = useState<T | null>(null);
+  const ref = useCallback((next: T | null) => setNode(next), []);
+
+  useEffect(() => {
+    if (!node) return;
+
+    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+      setCurrent(value);
+      return;
     }
-    observerRef.current?.disconnect();
-    observerRef.current = null;
-  }, []);
 
-  // The ref callback below cannot clean up after itself on unmount, because
-  // React calls it with null and there is nothing left to hang the teardown on.
-  useEffect(() => stop, [stop]);
+    // Both handles are torn down together on cleanup. Releasing only the frame
+    // left the observer alive on a detached node; releasing only the observer
+    // left an unstoppable rAF loop calling setState after unmount.
+    let frame: number | null = null;
 
-  const ref = useCallback(
-    (node: T | null) => {
-      // Always tear down first. React calls the ref with null on unmount AND
-      // whenever this callback's identity changes (value or motion preference).
-      // Skipping this on the null branch is what used to leave two observers on
-      // the same element, each driving its own animation loop against the same
-      // state — the number visibly jittered.
-      stop();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry?.isIntersecting) return;
 
-      if (!node) return;
+        // One-shot: stop observing before animating so a fast scroll cannot
+        // restart the count halfway through.
+        observer.disconnect();
 
-      if (prefersReducedMotion || !('IntersectionObserver' in window)) {
-        setCurrent(value);
-        return;
-      }
+        const start = performance.now();
+        const tick = (now: number) => {
+          const progress = Math.min((now - start) / DURATION_MS, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          const entry = entries[0];
-          if (!entry?.isIntersecting) return;
+          setCurrent(Math.round(value * eased));
+          frame = progress < 1 ? requestAnimationFrame(tick) : null;
+        };
 
-          // One-shot: stop observing before animating so a fast scroll cannot
-          // restart the count halfway through.
-          observer.disconnect();
-          observerRef.current = null;
+        frame = requestAnimationFrame(tick);
+      },
+      { threshold: VISIBILITY_THRESHOLD }
+    );
 
-          const start = performance.now();
-          const tick = (now: number) => {
-            const progress = Math.min((now - start) / DURATION_MS, 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
+    observer.observe(node);
 
-            setCurrent(Math.round(value * eased));
-            frameRef.current = progress < 1 ? requestAnimationFrame(tick) : null;
-          };
-
-          frameRef.current = requestAnimationFrame(tick);
-        },
-        { threshold: VISIBILITY_THRESHOLD }
-      );
-
-      observerRef.current = observer;
-      observer.observe(node);
-    },
-    [value, prefersReducedMotion, stop]
-  );
+    return () => {
+      if (frame !== null) cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
+  }, [node, value, prefersReducedMotion]);
 
   return { ref, display: `${current}${suffix}` };
 }

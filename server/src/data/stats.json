@@ -2,14 +2,14 @@
   {
     "id": "projects-delivered",
     "order": 1,
-    "value": 72,
+    "value": 15,
     "suffix": "",
     "label": "Proyectos entregados"
   },
   {
     "id": "average-delivery",
     "order": 2,
-    "value": 10,
+    "value": 15,
     "suffix": "",
     "label": "Días promedio de entrega"
   },
@@ -23,7 +23,7 @@
   {
     "id": "years-active",
     "order": 4,
-    "value": 5,
+    "value": 2,
     "suffix": " años",
     "label": "Trabajando con PyMEs"
   }

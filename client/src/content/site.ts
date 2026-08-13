@@ -18,7 +18,7 @@ export const SITE = {
   /* Rendered run together in the logo ("FerezSoluciones"), with the second half
      accented. `name` keeps the space for prose, aria-labels and structured data. */
   nameParts: { first: 'Ferez', second: 'Soluciones' },
-  email: 'contacto.mfsoluciones@gmail.com',
+  email: 'ferezsoluciones@gmail.com',
   phoneDisplay: '+54 9 11 3264-5016',
   /* wa.me wants digits only: country (54) + mobile marker (9) + area (11) + number. */
   whatsappUrl: 'https://wa.me/5491132645016',
@@ -42,10 +42,10 @@ export const HERO = {
   titleBefore: 'Tu negocio merece una web que ',
   titleHighlight: 'venda',
   titleAfter: ', no solo que exista.',
-  lead: 'Diseñamos y desarrollamos landing pages de alta conversión para pequeños negocios y PyMEs. Rápidas, responsivas, optimizadas para Google y listas en 10 días hábiles.',
+  lead: 'Diseñamos y desarrollamos landing pages de alta conversión para pequeños negocios y PyMEs. Rápidas, responsivas, optimizadas para Google y listas en 15 días hábiles.',
   primaryCta: 'Pedir presupuesto gratis',
   secondaryCta: 'Ver trabajos',
-  badges: ['Entrega en 10 días', 'Google PageSpeed 95+', 'Sin costos ocultos'],
+  badges: ['Entrega en 15 días', 'Google PageSpeed 95+', 'Sin costos ocultos'],
   mockupUrl: 'tunegocio.com.ar',
   floatingStats: [
     { value: '+38%', label: 'consultas web' },
@@ -65,19 +65,19 @@ export const PROCESS_STEPS = [
     number: '02',
     title: 'Diseño y copy',
     text: 'Te mostramos el diseño completo con los textos reales antes de escribir una línea de código. Dos rondas de ajustes incluidas.',
-    meta: 'Días 2 a 5'
+    meta: 'Días 2 a 7'
   },
   {
     number: '03',
     title: 'Desarrollo y optimización',
     text: 'Código limpio, accesible y rápido. Probamos en celular, tablet y escritorio, y en los navegadores que usan tus clientes.',
-    meta: 'Días 6 a 9'
+    meta: 'Días 8 a 14'
   },
   {
     number: '04',
     title: 'Publicación y acompañamiento',
     text: 'Subimos el sitio a tu dominio, conectamos la analítica y te dejamos un video explicando cómo actualizar los contenidos vos mismo.',
-    meta: 'Día 10 · + 30 días de soporte'
+    meta: 'Día 15 · + 30 días de soporte'
   }
 ] as const;
 
@@ -90,7 +90,7 @@ export const SECTION_HEADINGS = {
   },
   process: {
     eyebrow: 'Cómo trabajamos',
-    title: 'Cuatro pasos, diez días, cero sorpresas',
+    title: 'Cuatro pasos, quince días, cero sorpresas',
     lead: 'Un proceso claro donde siempre sabés en qué etapa está tu proyecto y qué se espera de vos.'
   },
   portfolio: {

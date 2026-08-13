@@ -190,7 +190,7 @@ All optional — see `.env.example`.
 | `NODE_ENV` | `development` | Hides error details in production |
 | `CLIENT_ORIGIN` | `http://localhost:5173` | CORS origin for the Vite dev server |
 | `EMAIL_TRANSPORT` | `console` | `console` logs the email; `resend` sends it |
-| `CONTACT_TO` | `contacto.mfsoluciones@gmail.com` | Inbox that receives the leads |
+| `CONTACT_TO` | `ferezsoluciones@gmail.com` | Inbox that receives the leads |
 | `CONTACT_FROM` | `onboarding@resend.dev` | Sender — must be a domain verified in Resend |
 | `RESEND_API_KEY` | — | Required when `EMAIL_TRANSPORT=resend` |
 | `CONTACT_RATE_LIMIT_MAX` | `5` | Submissions per IP per window |
@@ -242,7 +242,7 @@ Set these in **Project Settings → Environment Variables**:
 |---|---|
 | `EMAIL_TRANSPORT` | `resend` |
 | `RESEND_API_KEY` | your key from <https://resend.com/api-keys> |
-| `CONTACT_TO` | `contacto.mfsoluciones@gmail.com` |
+| `CONTACT_TO` | `ferezsoluciones@gmail.com` |
 | `CONTACT_FROM` | `onboarding@resend.dev`, or an address on a domain you verified |
 
 ### What changes on serverless, and why

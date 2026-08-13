@@ -31,14 +31,14 @@
     "id": "integrations",
     "order": 5,
     "icon": "chat",
-    "title": "Integración con WhatsApp y formularios",
-    "description": "Los mensajes llegan a donde ya trabajás: WhatsApp, mail o tu CRM. Sin plataformas nuevas que aprender."
+    "title": "Integración con WhatsApp y mail",
+    "description": "Los mensajes llegan a tu mail o whatsapp. Sin plataformas nuevas que aprender."
   },
   {
     "id": "analytics",
     "order": 6,
     "icon": "chart",
-    "title": "Analítica y soporte",
-    "description": "Dejamos medición configurada y 30 días de ajustes incluidos. Vas a saber qué funciona, no suponerlo."
+    "title": "Soporte",
+    "description": "Soporte técnico y mantenimiento. Actualizaciones de seguridad."
   }
 ]

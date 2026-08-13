@@ -57,7 +57,7 @@ export const env = Object.freeze({
     /** "console" logs to stdout; "resend" delivers through the Resend API. */
     transport: readString('EMAIL_TRANSPORT', 'console'),
     /** Inbox that receives the contact notifications. */
-    to: readString('CONTACT_TO', 'contacto.mfsoluciones@gmail.com'),
+    to: readString('CONTACT_TO', 'ferezsoluciones@gmail.com'),
     /**
      * Sender address. Resend only accepts a domain you have verified with them,
      * so a Gmail address will be rejected — use `onboarding@resend.dev` until a
