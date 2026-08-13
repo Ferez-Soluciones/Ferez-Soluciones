@@ -53,7 +53,7 @@ export const HERO = {
   ]
 } as const;
 
-/** The four delivery steps. Static: they describe how the studio works, not data. */
+/** The three delivery steps. Static: they describe how the studio works, not data. */
 export const PROCESS_STEPS = [
   {
     number: '01',
@@ -71,13 +71,7 @@ export const PROCESS_STEPS = [
     number: '03',
     title: 'Desarrollo y optimización',
     text: 'Código limpio, accesible y rápido. Probamos en celular, tablet y escritorio, y en los navegadores que usan tus clientes.',
-    meta: 'Días 8 a 14'
-  },
-  {
-    number: '04',
-    title: 'Publicación y acompañamiento',
-    text: 'Subimos el sitio a tu dominio, conectamos la analítica y te dejamos un video explicando cómo actualizar los contenidos vos mismo.',
-    meta: 'Día 15 · + 30 días de soporte'
+    meta: 'Días 8 a 15 · + 30 días de soporte'
   }
 ] as const;
 
@@ -90,7 +84,7 @@ export const SECTION_HEADINGS = {
   },
   process: {
     eyebrow: 'Cómo trabajamos',
-    title: 'Cuatro pasos, quince días, cero sorpresas',
+    title: 'Tres pasos, quince días, cero sorpresas',
     lead: 'Un proceso claro donde siempre sabés en qué etapa está tu proyecto y qué se espera de vos.'
   },
   portfolio: {

@@ -1,13 +1,13 @@
 /**
  * Section: Proceso
- * Responsibility: the four delivery steps.
+ * Responsibility: the three delivery steps.
  *
  * Static content: these steps describe how the studio works, not data it edits,
  * so they live in content/site.ts and never touch the API.
  *
  * Marked up as an ordered list because the steps genuinely happen in sequence —
  * that ordering is information, and `<ol>` is how it reaches assistive tech. The
- * "01…04" numerals are decorative duplicates of that semantics, hence aria-hidden.
+ * "01…03" numerals are decorative duplicates of that semantics, hence aria-hidden.
  */
 import { PROCESS_STEPS, SECTION_HEADINGS } from '../../content/site.js';
 import { useReveal } from '../../hooks/useReveal.js';

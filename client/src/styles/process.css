@@ -45,8 +45,8 @@
   .steps { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* --- ≥ 1120px: four across, number stacked above the body --- */
+/* --- ≥ 1120px: three across, number stacked above the body --- */
 @media (min-width: 1120px) {
-  .steps { grid-template-columns: repeat(4, 1fr); }
+  .steps { grid-template-columns: repeat(3, 1fr); }
   .step { grid-template-columns: 1fr; gap: var(--space-sm); }
 }
