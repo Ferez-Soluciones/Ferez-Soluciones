@@ -12,20 +12,14 @@
     "answer": "No hace falta que lo tengas resuelto. Si ya contás con dominio, publicamos ahí. Si no, te asesoramos para comprarlo a tu nombre —siempre a tu nombre, nunca al nuestro— y nos encargamos de la configuración técnica."
   },
   {
-    "id": "actualizar-textos",
-    "order": 3,
-    "question": "¿Puedo actualizar los textos yo mismo?",
-    "answer": "Sí. Al entregar el proyecto grabamos un video corto mostrándote cómo cambiar textos, precios e imágenes. Para negocios que prefieren no tocar nada, ofrecemos un plan de mantenimiento mensual opcional."
-  },
-  {
     "id": "no-me-gusta",
-    "order": 4,
+    "order": 3,
     "question": "¿Qué pasa si no me gusta el diseño?",
     "answer": "El diseño se aprueba antes de programar, así que nunca vas a ver el sitio terminado por primera vez. Incluimos dos rondas de ajustes en esa etapa y trabajamos sobre tus comentarios hasta que estés conforme."
   },
   {
     "id": "todo-el-pais",
-    "order": 5,
+    "order": 4,
     "question": "¿Trabajan con negocios de todo el país?",
     "answer": "Sí. Todo el proceso es remoto: brief por videollamada, avances por mail y aprobaciones online. Ya trabajamos con negocios de Buenos Aires, Córdoba, Mendoza y Neuquén."
   }
