@@ -3,19 +3,19 @@
     "id": "precio",
     "order": 1,
     "question": "¿Cuánto cuesta una landing page?",
-    "answer": "Los proyectos arrancan desde un valor cerrado que definimos después del brief inicial, sin costos por hora ni sorpresas al final. El presupuesto incluye diseño, desarrollo, publicación y 30 días de soporte. Te lo pasamos por escrito antes de que decidas nada."
+    "answer": "Los proyectos arrancan desde un valor cerrado que definimos después del brief inicial. Sin costos por hora, sin sorpresas al final. El presupuesto incluye diseño, desarrollo, publicación y 30 días de soporte, y te lo pasamos por escrito antes de que decidas nada."
   },
   {
     "id": "dominio-hosting",
     "order": 2,
     "question": "¿Necesito tener dominio y hosting?",
-    "answer": "No hace falta que lo tengas resuelto. Si ya contás con dominio, publicamos ahí. Si no, te asesoramos para comprarlo a tu nombre —siempre a tu nombre, nunca al nuestro— y nos encargamos de la configuración técnica."
+    "answer": "No hace falta que lo tengas resuelto. Si ya contás con dominio, publicamos ahí. Si no, te ayudamos a comprarlo, siempre a tu nombre y nunca al nuestro, y nos encargamos de la configuración técnica."
   },
   {
     "id": "no-me-gusta",
     "order": 3,
     "question": "¿Qué pasa si no me gusta el diseño?",
-    "answer": "El diseño se aprueba antes de programar, así que nunca vas a ver el sitio terminado por primera vez. Incluimos dos rondas de ajustes en esa etapa y trabajamos sobre tus comentarios hasta que estés conforme."
+    "answer": "Aprobás el diseño antes de que programemos nada, así que nunca vas a ver el sitio terminado por primera vez. Incluimos dos rondas de ajustes en esa etapa y trabajamos sobre tus comentarios hasta que estés conforme."
   },
   {
     "id": "todo-el-pais",

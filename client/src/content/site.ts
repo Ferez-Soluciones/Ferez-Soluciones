@@ -80,12 +80,12 @@ export const SECTION_HEADINGS = {
   services: {
     eyebrow: 'Qué hacemos',
     title: 'Todo lo que tu negocio necesita para estar online',
-    lead: 'No vendemos plantillas. Cada proyecto se diseña alrededor de un objetivo concreto: que te llamen, que te escriban, que te compren.'
+    lead: 'No vendemos plantillas: diseñamos cada proyecto alrededor de un objetivo concreto. Que te llamen, que te escriban, que te compren.'
   },
   process: {
     eyebrow: 'Cómo trabajamos',
     title: 'Tres pasos, quince días, cero sorpresas',
-    lead: 'Un proceso claro donde siempre sabés en qué etapa está tu proyecto y qué se espera de vos.'
+    lead: 'Un proceso claro: siempre sabés en qué etapa está tu proyecto y qué esperamos de vos.'
   },
   portfolio: {
     eyebrow: 'Trabajos recientes',

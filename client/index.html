@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ferez Soluciones | Landing Pages que Convierten para PyMEs</title>
-  <meta name="description" content="Estudio de diseño y desarrollo de landing pages de alta conversión para pequeños negocios y PyMEs. Sitios rápidos, responsivos y optimizados para SEO. Entrega en 15 días.">
+  <meta name="description" content="Landing pages de alta conversión para PyMEs. Diseño, desarrollo y SEO técnico. Sitios rápidos y responsivos, listos en 15 días. Pedí tu propuesta.">
   <meta name="author" content="Ferez Soluciones">
   <meta name="theme-color" content="#74ACDF">
 
@@ -51,7 +51,16 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&display=swap">
+  <!--
+    Fonts load non-blocking: the stylesheet downloads with media="print" (browser
+    fetches it without waiting to apply it), then swaps to "all" via onload once
+    it's ready. The noscript fallback covers browsers/crawlers without JS.
+  -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&display=swap">
+  </noscript>
 
   <!--
     Structured data stays in the document head rather than being injected by
