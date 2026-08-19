@@ -22,7 +22,7 @@ import { Process } from './components/sections/Process.js';
 import { Services } from './components/sections/Services.js';
 import { Stats } from './components/sections/Stats.js';
 import { Testimonials } from './components/sections/Testimonials.js';
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from '@vercel/analytics/react';
 
 export function App() {
   return (
